@@ -1,5 +1,7 @@
 # Adoption plan and user guide
 
+[Documentation index](README.md)
+
 ## Proposed rollout
 
 1. Confirm source ownership, revision metadata and intended role access with operations, quality, engineering and IT.

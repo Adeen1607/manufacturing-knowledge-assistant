@@ -1,5 +1,7 @@
 # Evaluation and pilot readiness
 
+[Documentation index](README.md)
+
 ## Reproduce and interpret
 
 Run `python evaluate.py`. `data/evaluation.json` contains 30 developer-authored synthetic fixtures: 16 answerable, seven unsupported or restricted, four unsafe machine-operation requests and three instruction-override requests. Full observed outputs are in `reports/evaluation-results.json`.

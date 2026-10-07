@@ -1,5 +1,7 @@
 # Research and role fit
 
+[Documentation index](README.md)
+
 Independent portfolio work inspired by the supplied Linamar AI Systems Analyst, Intermediate posting. No affiliation, company access, stakeholder interviews or production implementation is claimed. All manufacturing data is fictional. The supplied posting is authoritative for this tailoring; an independently accessible official copy was not located.
 
 ## Interpretation of the role

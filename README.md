@@ -1,65 +1,60 @@
 # Manufacturing Knowledge Assistant
 
-**Retrieve approved manufacturing information, show evidence, and measure what fails.**
+**Find approved manufacturing information, inspect the evidence, and measure failures.**
 
-An independent portfolio prototype by Mohammed Adeen Shaik. Python BM25 retrieval searches a versioned fictional document corpus after approval/current-version and simulated role filtering. Offline mode returns cited excerpts. An optional Ollama adapter synthesizes a locally generated answer from those excerpts.
+[![Verify prototype](https://github.com/Adeen1607/manufacturing-knowledge-assistant/actions/workflows/checks.yml/badge.svg)](https://github.com/Adeen1607/manufacturing-knowledge-assistant/actions/workflows/checks.yml)
 
+A local Python/SQLite prototype that filters fictional documents by approval, revision status and simulated role, then ranks relevant sources using BM25. Offline mode displays cited excerpts. Optional Ollama mode sends the retrieved evidence to a local language model for synthesis.
 
-## Run without credentials
+## Quick start
 
-Python 3.10+; no packages required:
+Requires Python 3.10+. Offline mode needs no packages or API key.
 
 ```bash
+git clone https://github.com/Adeen1607/manufacturing-knowledge-assistant.git
+cd manufacturing-knowledge-assistant
 python app.py
 ```
 
-Open http://127.0.0.1:8052. Optional: `python app.py --port 8052 --db demo.db`.
+Open http://127.0.0.1:8052. Ask **“What should I do with nonconforming parts?”** and inspect the source ID, version, owner and excerpt.
+
+See [Getting started](docs/getting-started.md) for platform options and [Local LLM setup](docs/local-llm.md) for optional generation.
+
+## Response paths
+
+| Path | Implemented behavior |
+|---|---|
+| Source filtering | Only current, approved documents with the selected role are eligible |
+| Retrieval | BM25 ranks title/body tokens; a query-coverage gate determines abstention |
+| Offline answer | Up to three cited source excerpts, with no LLM generation |
+| Optional generation | Fixed localhost Ollama endpoint; citation-label checks; human-review status |
+| Control demonstrations | Pattern-based instruction-override blocking and operational-request escalation |
+| Monitoring | Query status, mode, role, latency and categorized feedback in SQLite |
+
+The role selector is a simulation, not identity-based access control. The API field `confidence` means normalized query-token coverage, not probability of correctness.
+
+## Baseline evidence
+
+**15 automated tests pass.** The offline evaluation passes **25 of 30 synthetic development cases**. Expected source hit at rank 1 is **11/16 (68.8%)** across answerable cases; five supported paraphrases incorrectly abstain. The [complete report](reports/evaluation-results.json) preserves those failures.
 
 ```bash
 python -m unittest discover -s tests -v
 python evaluate.py
 ```
 
-Ask “What should I do with nonconforming parts?” and inspect DOC-01 version 2. Compare engineering change access as operator vs engineering. Try a supplier invoice question (unapproved source), an interlock-bypass request (escalation), and an instruction-override request (block). Record feedback and inspect monitoring counts.
+The evaluator reports quality results but does not fail its process exit code when fixture cases fail. A green workflow confirms the configured tests/evaluation commands completed; it does not mean all evaluation cases passed. No real Ollama model was executed during baseline verification.
 
-## Optional local LLM: actual RAG path
+## Documentation
 
-Install Ollama separately, start its local service and pull `llama3.2:3b` using `ollama pull llama3.2:3b`. Set `OLLAMA_MODEL` to choose another installed model. Select **Local LLM / Ollama** in the interface. The adapter calls the fixed localhost chat endpoint with retrieved context and citation instructions. Ollama installation requires its own internet access and sufficient hardware.
+Start with the [Documentation index](docs/README.md), or choose a route:
 
-The LLM path is implemented and its unavailable-provider behavior is tested; a real model was **not run in the build environment**. Offline tests evaluate retrieval and control behavior, not LLM answer quality. Do not call the extractive mode generative AI. Citation-label validation cannot prove factual grounding.
+- **Run and demonstrate:** [Setup](docs/getting-started.md), [Local LLM](docs/local-llm.md), [User guide](docs/adoption-and-user-guide.md), [Troubleshooting](docs/troubleshooting.md).
+- **Understand the implementation:** [Architecture](docs/architecture.md), [Data dictionary](docs/data-dictionary.md), [API reference](docs/api-reference.md), [Retrieval design](docs/retrieval-design.md).
+- **Review the analyst work:** [Requirements](docs/requirements.md), [Evaluation and pilot decision](docs/evaluation.md), [Governance](docs/governance.md), [Adoption plan](docs/adoption-and-user-guide.md).
+- **Assess evidence:** [Testing](docs/testing.md), [Build validation](reports/validation.md), [Research and role fit](docs/research-and-role-fit.md).
 
-## Reproducible results
+## Scope and next steps
 
-- 15 automated tests pass: approval/version filters, role access, abstention, escalation, injection patterns, feedback accounting and model failure behavior.
-- 30 small developer-authored synthetic evaluation cases: **25/30 pass (83.3%)**.
-- Expected source at rank 1 for answerable cases: **11/16 (68.8%)**.
-- Five answerable paraphrases abstain. All seven expected unsupported/restricted questions abstain, four unsafe requests escalate, and three tested injection phrases block.
+Independent portfolio work by Mohammed Adeen Shaik. All documents and stakeholders are fictional; no Linamar relationship or production outcomes are claimed. The assistant cannot authorize machine operation, product release or engineering changes. Pattern checks and citation labels do not guarantee security, safety or factual grounding.
 
-These cases are not held out and are not a production or security benchmark. See [full results, including failures](reports/evaluation-results.json) and [evaluation interpretation](docs/evaluation.md).
-
-## Capabilities
-
-- Eight document fixtures including six current approved documents, one archived revision and one unapproved draft.
-- BM25 ranking with simple token normalization and a conservative query-coverage threshold.
-- Source IDs, versions, owners and review dates surfaced to users.
-- Optional local-model synthesis with human-review status and citation-label checks.
-- Local SQLite usage counts, response status, latency and categorized feedback; question text is not stored.
-
-## Analyst deliverables
-
-- [Requirements and process flow](docs/requirements.md)
-- [Evaluation, failures and pilot criteria](docs/evaluation.md)
-- [Risk register and ownership](docs/governance.md)
-- [Rollout plan, training and user guide](docs/adoption-and-user-guide.md)
-- [Architecture and API contract](docs/architecture.md)
-- [Research and role mapping](docs/research-and-role-fit.md)
-
-## Scope boundaries
-
-Role selection is simulated and is not authentication. The application is localhost-only, not production-ready. Regex checks are incomplete injection/safety demonstrations. No real work instructions, machine control, company data, stakeholder study or deployed Microsoft integration is included. Source files are locally trusted; adversarial source ingestion is not defended. The “confidence” value is query token coverage, not probability of correctness. No stale-review expiration policy is implemented; current/approved flags require document-owner maintenance.
-
-## Resume wording
-
-“Developed a manufacturing knowledge-assistant prototype with version-aware, role-filtered retrieval, cited evidence, unsupported-query abstention, safety escalation and SQLite feedback monitoring; evaluated 30 synthetic scenarios and documented retrieval failures and rollout criteria.”
-
-MIT licensed. Independent portfolio work; no Linamar affiliation.
+The next evidence-based step is to improve retrieval and evaluate genuinely unseen user questions before a real pilot. Authentication, delegated enterprise source access, controlled ingestion and answer-quality validation remain proposed work. See [Security](SECURITY.md), [Contributing](CONTRIBUTING.md) and the [MIT license](LICENSE).

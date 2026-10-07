@@ -1,5 +1,7 @@
 # Requirements and process flow
 
+[Documentation index](README.md)
+
 ## Business problem and intended use
 
 In a fictional manufacturing operation, approved knowledge is difficult to locate among revisions and department folders. Users need a source-backed lookup assistant. This supports information discovery; it cannot approve product disposition, authorize machine actions or replace site procedures.

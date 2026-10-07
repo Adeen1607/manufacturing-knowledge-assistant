@@ -1,5 +1,7 @@
 # Responsible AI and ownership
 
+[Documentation index](README.md)
+
 | Risk | Potential impact | Prototype control | Remaining limitation | Owner persona |
 |---|---|---|---|---|
 | Superseded procedure retrieved | Incorrect action | Current/approved filter and archived fixture | Metadata maintenance depends on owner | Document controller |

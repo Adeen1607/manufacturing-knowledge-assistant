@@ -1,18 +1,53 @@
-# Architecture and API contract
+# Architecture
 
-Standard-library HTTP server serves a static accessible-label HTML interface and JSON API. `core.py` normalizes query tokens, filters documents, applies BM25 and minimum coverage, then returns excerpts or sends evidence to a fixed localhost Ollama endpoint. SQLite stores aggregate query telemetry and feedback, not questions or answers.
+[Documentation index](README.md)
 
-| Endpoint | Contract |
+## Components
+
+The browser uses a same-origin JSON API. The HTTP adapter calls the retrieval/control pipeline, then stores minimal telemetry in SQLite. Offline mode remains usable without the model service.
+
+```mermaid
+flowchart TD
+  U["Browser: index.html"] --> H["HTTP adapter: app.py"]
+  H --> C["Question controls and retrieval: core.py"]
+  J["Approved document fixtures"] --> C
+  C --> O["Optional local Ollama"]
+  H --> D[("SQLite telemetry and feedback")]
+  E["evaluate.py"] --> C
+  E --> R["Evaluation JSON report"]
+```
+
+## Ask-request lifecycle
+
+1. Validate the question, simulated role and response mode.
+2. Apply instruction-override patterns first, then operational-request patterns. Matched questions return a control status without retrieval.
+3. Load document JSON and filter by current, approved and selected role.
+4. Normalize title/body/query tokens, compute role-specific BM25 and retain sources meeting query coverage.
+5. If no source qualifies, abstain. Otherwise return excerpts or request local-model synthesis.
+6. Build the response with status, sources, coverage and local elapsed latency.
+7. Persist role/status/mode/latency, assign an answer ID and return JSON. Feedback later refers to this ID.
+
+The response body is not stored in SQLite. The evaluator calls `answer_question` directly and therefore does not generate application telemetry.
+
+## Files and responsibilities
+
+| Path | Responsibility |
 |---|---|
-| GET `/` | HTML interface |
-| GET `/api/metrics` | Query counts, status counts, mean latency, feedback count and helpful rate |
-| POST `/api/ask` | `{ "question": "nonconforming parts", "role": "operator", "mode": "extractive" }` |
-| POST `/api/feedback` | `{ "id": 1, "useful": 1, "category": "clear" }` |
+| `app.py` | CLI, synchronous localhost server, JSON routes |
+| `core.py` | Tokenization, eligibility, BM25, controls, generation adapter, telemetry |
+| `index.html` | Question form, source display, feedback and monitoring |
+| `data/documents.json` | Eight fictional source fixtures |
+| `data/evaluation.json` | Thirty expected question/status/source fixtures |
+| `evaluate.py` | Offline fixture evaluation and failure reporting |
+| `tests/test_core.py` | Retrieval/control/persistence and provider-failure tests |
+| `tests/test_http.py` | Real localhost answer/feedback/error requests |
+| `reports/` | Baseline results and validation scope |
+| `docs/` | Technical and analyst guides |
 
-Ask response: local ID, status, answer, source metadata/excerpts, coverage indicator called confidence, mode and latency. Invalid role, mode, question length or feedback yields HTTP 400. Only known endpoints are served. Payloads are capped at 16 KiB. The server is single-threaded; a long local-model request blocks other requests.
+## Runtime and performance limits
 
-Document metadata includes stable ID, title, version, owner, review date, approved/current flags and roles. Every request reloads the fixture corpus, but metadata is not independently signed or authenticated. BM25 statistics are computed only on role-eligible documents. Coverage is the fraction of normalized meaningful query tokens found in a document; it is not calibrated confidence.
+`HTTPServer` is single-threaded. A local-model request can wait up to its configured 90-second network timeout and block other requests. The corpus is loaded and tokenized for each retrieval; there is no embedding index, chunk store, cache, async job queue or model-session memory. Sources are complete fixture documents rather than parsed PDFs or SharePoint files.
 
-Ollama uses the localhost `/api/chat` endpoint, temperature zero and model name from `OLLAMA_MODEL`. Errors become `generation_failed`; successful synthesis is `generated_needs_review`. No cloud API key, embedding service or vector database is required.
+SQLite connections are created per API request and closed afterward. Tables are created if missing; there is no schema migration framework. Query IDs represent requests, not sessions or unique people. The selected role is supplied by the caller and is not an authenticated principal.
 
-Enterprise extension requires authenticated identity, managed source retrieval, version/withdrawal propagation, semantic retrieval evaluation, robust safety controls, protected telemetry and a production application server. These are planned extensions, not implemented integrations.
+See [Retrieval design](retrieval-design.md), [Data dictionary](data-dictionary.md), [API reference](api-reference.md) and [Local LLM](local-llm.md).
