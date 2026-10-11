@@ -58,3 +58,35 @@ Start with the [Documentation index](docs/README.md), or choose a route:
 Independent portfolio work by Mohammed Adeen Shaik. All documents and stakeholders are fictional; no Linamar relationship or production outcomes are claimed. The assistant cannot authorize machine operation, product release or engineering changes. Pattern checks and citation labels do not guarantee security, safety or factual grounding.
 
 The next evidence-based step is to improve retrieval and evaluate genuinely unseen user questions before a real pilot. Authentication, delegated enterprise source access, controlled ingestion and answer-quality validation remain proposed work. See [Security](SECURITY.md), [Contributing](CONTRIBUTING.md) and the [MIT license](LICENSE).
+
+
+## Rebuild the reading edition
+
+```bash
+python -m pip install -r requirements-research.txt
+python scripts/build_research_site.py
+```
+
+This renders saved notebook outputs without rerunning model training or external APIs. To refresh findings, run the analysis commands above first, update `reports/research-findings.md`, and rebuild.
+
+<!-- research-edition:start -->
+## Research edition
+
+[Research report and final visual results](research/report.md) · [Browser-ready notebook catalogue](research/notebooks.html)
+
+Fresh offline evaluation on 11 October 2026: **25/30 fixtures pass**. Status accuracy is **83.3%** and expected-source hit at rank 1 is **68.8%** on answerable fixtures. These are developer-authored synthetic cases, not a held-out benchmark. **5 failures remain visible** in evaluation-results.json. Optional LLM generation was not evaluated.
+
+| Measure | Value |
+|---|---:|
+| mode | offline extractive; LLM generation not evaluated |
+| dataset | 30 developer-authored synthetic fixtures; not held out |
+| cases | 30 |
+| passed | 25 |
+| status accuracy | 0.8333 |
+| expected source hit at 1 | 0.6875 |
+
+
+
+The `research/` folder contains a professional static reading edition. The Pages workflow deploys it after GitHub Pages is enabled with **GitHub Actions** as the publishing source. Intended URL: `https://adeen1607.github.io/manufacturing-knowledge-assistant/`. Deployment status must be checked in Actions before treating that address as live.
+
+<!-- research-edition:end -->

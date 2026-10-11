@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manufacturing Knowledge Retrieval Evaluation</title><link rel="stylesheet" href="style.css"></head><body><header><div><p class="meta">Mohammed Adeen Shaik · Research and coursework</p><h1>Manufacturing Knowledge Retrieval Evaluation</h1><nav><a href="index.html">Overview</a><a href="report.html">Research report</a><a href="notebooks.html">Explained notebooks</a><a href="https://github.com/Adeen1607/manufacturing-knowledge-assistant">Source repository</a></nav></div></header><main><h1 id="manufacturing-knowledge-retrieval-evaluation">Manufacturing Knowledge Retrieval Evaluation</h1>
+<p><strong>Author:</strong> Mohammed Adeen Shaik<br />
+<strong>Review date:</strong> 11 October 2026</p>
+<h2 id="research-question">Research question</h2>
+<p>Which developer-authored retrieval and control cases pass, and which failures need investigation?</p>
+<h2 id="data-and-provenance">Data and provenance</h2>
+<p>Fictional manufacturing documents and 30 developer-authored evaluation fixtures.</p>
+<p>Source materials are linked from the repository README. Input fingerprints are recorded in <a href="evidence.json">the evidence manifest</a> so a reader can identify the exact committed artifacts used in this review.</p>
+<h2 id="method-and-analytical-rationale">Method and analytical rationale</h2>
+<p>evaluate.py checks expected response status and, for answerable fixtures, the highest-ranked source. Offline BM25 extraction is evaluated; optional LLM generation is not.</p>
+<h2 id="findings-and-interpretation">Findings and interpretation</h2>
+<p>Fresh offline evaluation on 11 October 2026: <strong>25/30 fixtures pass</strong>. Status accuracy is <strong>83.3%</strong> and expected-source hit at rank 1 is <strong>68.8%</strong> on answerable fixtures. These are developer-authored synthetic cases, not a held-out benchmark. <strong>5 failures remain visible</strong> in evaluation-results.json. Optional LLM generation was not evaluated.</p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mode</td>
+<td style="text-align: right;">offline extractive; LLM generation not evaluated</td>
+</tr>
+<tr>
+<td>dataset</td>
+<td style="text-align: right;">30 developer-authored synthetic fixtures; not held out</td>
+</tr>
+<tr>
+<td>cases</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>passed</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr>
+<td>status accuracy</td>
+<td style="text-align: right;">0.8333</td>
+</tr>
+<tr>
+<td>expected source hit at 1</td>
+<td style="text-align: right;">0.6875</td>
+</tr>
+</tbody>
+</table>
+<h2 id="limitations">Limitations</h2>
+<p>Fixtures are authored by the developer and are not held out. Results do not measure production robustness. A role selector is simulation, not authentication. Failures must remain visible.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p>Use the setup commands and input contract in the <a href="https://github.com/Adeen1607/manufacturing-knowledge-assistant#readme">repository README</a>. Open the <a href="notebooks.html">notebook catalogue</a> for annotated code and saved outputs. Keep raw records and model binaries local; public reports contain aggregate results or source-embedded figures.</p>
+<h2 id="final-visual-results">Final visual results</h2>
+<p><img alt="Reproduced aggregate figure: fixture-outcomes.png" src="figures/fixture-outcomes.png" /></p>
+<p><em>Reproduced aggregate figure: fixture-outcomes.png.</em></p><footer>Evidence dates and limitations are documented in the report. Static pages display saved outputs; they do not execute Python, R, Streamlit or API calls.</footer></main></body></html>

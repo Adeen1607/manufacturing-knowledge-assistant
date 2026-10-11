@@ -1,0 +1,19 @@
+{
+  "repository": "Adeen1607/manufacturing-knowledge-assistant",
+  "review_date": "2026-10-11",
+  "evidence_note": "Fresh offline evaluation on 11 October 2026: **25/30 fixtures pass**. Status accuracy is **83.3%** and expected-source hit at rank 1 is **68.8%** on answerable fixtures. These are developer-authored synthetic cases, not a held-out benchmark. **5 failures remain visible** in evaluation-results.json. Optional LLM generation was not evaluated.\n\n| Measure | Value |\n|---|---:|\n| mode | offline extractive; LLM generation not evaluated |\n| dataset | 30 developer-authored synthetic fixtures; not held out |\n| cases | 30 |\n| passed | 25 |\n| status accuracy | 0.8333 |\n| expected source hit at 1 | 0.6875 |\n\n",
+  "inputs": [
+    {
+      "path": "data/evaluation.json",
+      "sha256": "76953ea4004489e9ebe90f9567d244539b648914256d7a7adaae8a65a37e453c"
+    },
+    {
+      "path": "data/documents.json",
+      "sha256": "3855c26fd841a91224ecd267ec99f499e8f892f0df7b0de6d86699e98af8ac5e"
+    },
+    {
+      "path": "reports/evaluation-results.json",
+      "sha256": "066a9ebe5a78c195323f6992155a755730ec7fb3ecafa31994f54890b442b3c4"
+    }
+  ]
+}
