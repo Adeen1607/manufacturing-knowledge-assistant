@@ -27,6 +27,18 @@ class HttpTests(unittest.TestCase):
     def test_unknown_route(self):
         with self.assertRaises(urllib.error.HTTPError) as context: self.request('/unknown')
         self.assertEqual(context.exception.code,404)
+    def test_unknown_post_route_returns_404_without_body(self):
+        request=urllib.request.Request(self.url+'/unknown',data=b'',method='POST')
+        with self.assertRaises(urllib.error.HTTPError) as context:
+            urllib.request.urlopen(request,timeout=5)
+        self.assertEqual(context.exception.code,404)
+
+    def test_invalid_json_on_known_route_returns_400(self):
+        request=urllib.request.Request(self.url+'/api/ask',data=b'{',method='POST')
+        with self.assertRaises(urllib.error.HTTPError) as context:
+            urllib.request.urlopen(request,timeout=5)
+        self.assertEqual(context.exception.code,400)
+
     def test_api_answer_feedback_and_rejection(self):
         result=self.request('/api/ask',{'question':'nonconforming parts','role':'operator','mode':'extractive'})
         self.assertEqual(result['sources'][0]['id'],'DOC-01')
