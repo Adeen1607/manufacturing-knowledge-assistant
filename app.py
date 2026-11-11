@@ -16,6 +16,9 @@ def make_handler(db_path):
                 else: self.send({'error':'Not found'},404)
             finally: db.close()
         def do_POST(self):
+            if self.path not in ('/api/ask', '/api/feedback'):
+                self.send({'error': 'Not found'}, 404)
+                return
             db=connect(db_path)
             try:
                 length=int(self.headers.get('Content-Length',0))
